@@ -4,13 +4,14 @@ __pycache__/
 *$py.class
 
 
-# dowloaded datasets
+# paths
 food_classifier/downloads/
 food_classifier/data/
 food_classifier/model_ckpts/
 food_classifier/logs/
+food_classifier/.DS_Store
 
-
+.DS_Store
 
 # C extensions
 *.so
