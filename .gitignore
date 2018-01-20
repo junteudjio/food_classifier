@@ -8,6 +8,7 @@ __pycache__/
 food_classifier/downloads/
 food_classifier/data/
 food_classifier/model_ckpts/
+food_classifier/logs/
 
 
 
