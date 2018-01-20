@@ -14,7 +14,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 __author__ = 'Junior Teudjio'
-__all__ = ['base_model', 'vgg16_model', 'mobilenet_model']
+__all__ = ['base_model', 'mobilenet_model']
 
 
 def base_model(init='glorot_uniform', activation='relu', batch_norm=True, dropout=0.5, regularizer='l2-0.01'):
@@ -92,10 +92,6 @@ def base_model(init='glorot_uniform', activation='relu', batch_norm=True, dropou
     ))
 
     return model
-
-
-def vgg16_model():
-    pass
 
 def mobilenet_model():
     pass
