@@ -7,4 +7,4 @@ scikit-learn
 keras
 pillow
 h5py
-Flask==0.10.1
+Flask==0.12.2
