@@ -21,7 +21,7 @@ def predict():
 
 def _setup_args():
      parser = argparse.ArgumentParser()
-     parser.add_argument('--port', type=int, default=8086)
+     parser.add_argument('--port', type=int, default=8383)
      parser.add_argument('--host', type=str, default='0.0.0.0')
      return parser.parse_args()
 
