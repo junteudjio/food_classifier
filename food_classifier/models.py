@@ -142,6 +142,20 @@ def mobilenet_model(init='glorot_uniform', activation='relu', dropout=0.5, regul
     model.add(layers.Dense(512, activation=activation, kernel_initializer=init, kernel_regularizer=regularizer))
     model.add(layers.Dense(1, activation='sigmoid'))
 
+    logger.info('''
+
+        Created mobilenet model with params:
+            init = {init}
+            activation = {activation}
+            batch_norm = {batch_norm}
+            dropout = {dropout} 
+            architecture = {architecture}'''.format(
+        init=init,
+        activation=activation,
+        dropout=dropout,
+        architecture=model.to_json()
+    ))
+
     return model
 
 
