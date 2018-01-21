@@ -35,13 +35,13 @@ class Model(object):
         self.models = dict()
         try:
             self.models['base_model'] = _get_best_model_path('base_model')
+            self.models['mobilenet_model'] = _get_best_model_path('mobilenet_model')
         except Exception as e:
             logger.error('Unable to load model, error_message = {}'.format(repr(e)))
             raise e
-        self.models['mobilenet_model'] = _get_best_model_path('mobilenet_model')
         self.labels = {1:'sandwich', 0:'sushi'}
 
-    def predict(self, image_path, model_type='base_model'):
+    def predict(self, image_path, model_type='mobilenet_model'):
         logger.info('''
         Getting prediction for
         image: {image_path}
