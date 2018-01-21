@@ -17,10 +17,23 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 __author__ = 'Junior Teudjio'
+__all__ = ['Model']
 
 ckpts_path = 'model_ckpts/_backups'
 
 def _get_best_model_path(model_type):
+    '''
+    Get the best model checkpoint for a given model type.
+
+    Parameters
+    ----------
+    model_type : str
+        Model type to consider, one of: base_model or mobilenet_model
+
+    Returns
+    -------
+    best_model : Keras model object
+    '''
     model_type_template = '{}.ckpt-*'.format(model_type)
     all_models_paths = glob.glob(os.path.join(ckpts_path, model_type_template))
     all_models_paths.sort(key=lambda path: path.split('-')[-1]) #sort by val_score
@@ -42,6 +55,23 @@ class Model(object):
         self.labels = {1:'sandwich', 0:'sushi'}
 
     def predict(self, image_path, model_type='mobilenet_model'):
+        '''
+        Get the prediction for an image given by a model type.
+
+        Parameters
+        ----------
+        image_path : str
+            Path to  the image to  get prediction.
+        model_type : str
+            Model type to consider, one of: base_model or mobilenet_model
+
+        Returns
+        -------
+        prediction : dict {label_idx, label, confidence}
+            label_idx : an str(int) representing the index of the predicted label.
+            label : an str reprenting the label name.
+            confidence : a 'probability' score given by the model.
+        '''
         logger.info('''
         Getting prediction for
         image: {image_path}

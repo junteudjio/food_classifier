@@ -7,6 +7,18 @@ __all__ = ['mkdir_p', 'remove_childreen']
 
 
 def mkdir_p(path):
+    '''
+    Recursively creates the directories in a given path
+    Equivalent to batch cmd mkdir -p.
+
+    Parameters
+    ----------
+    path : str
+        Path to the final directory to create.
+    Returns
+    -------
+
+    '''
     try:
         os.makedirs(path)
     except OSError as exc:  # Python >2.5
@@ -17,6 +29,17 @@ def mkdir_p(path):
 
 
 def remove_childreen(path):
+    '''
+    Delete all the children folders/files in a directory.
+
+    Parameters
+    ----------
+    path : str
+       Path to the directory to clean up.
+    Returns
+    -------
+
+    '''
     for the_file in os.listdir(path):
         file_path = os.path.join(path, the_file)
         try:
