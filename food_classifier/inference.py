@@ -21,7 +21,7 @@ __all__ = ['Model']
 
 ckpts_path = 'model_ckpts'
 
-def _get_best_model_path(model_type):
+def _get_best_model_path(model_type, ckpts_path=ckpts_path):
     '''
     Get the best model checkpoint for a given model type.
 
@@ -39,20 +39,26 @@ def _get_best_model_path(model_type):
     all_models_paths.sort(key=lambda path: path.split('-')[-1]) #sort by val_score
 
     best_model_path = all_models_paths[-1]
+
+    return best_model_path
+
+
+def _load_model(model_path, model_type):
     custom_objects = None
     if model_type == 'mobilenet_model':
         custom_objects = {'relu6': keras.applications.mobilenet.relu6,
                           'DepthwiseConv2D': keras.applications.mobilenet.DepthwiseConv2D}
-    best_model = keras.models.load_model(best_model_path, custom_objects=custom_objects)
+    model = keras.models.load_model(model_path, custom_objects=custom_objects)
+    return model
 
-    return best_model
 
 class Model(object):
-    def __init__(self):
+    def __init__(self, ckpts_path=ckpts_path):
         self.models = dict()
         try:
-            self.models['base_model'] = _get_best_model_path('base_model')
-            self.models['mobilenet_model'] = _get_best_model_path('mobilenet_model')
+            self.models['base_model'] = _load_model(_get_best_model_path('base_model', ckpts_path), 'base_model')
+            self.models['mobilenet_model'] = \
+                _load_model(_get_best_model_path('mobilenet_model', ckpts_path), 'mobilenet_model')
         except Exception as e:
             logger.error('Unable to load model, error_message = {}'.format(repr(e)))
             raise e
