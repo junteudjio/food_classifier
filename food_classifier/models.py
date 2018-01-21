@@ -93,8 +93,57 @@ def base_model(init='glorot_uniform', activation='relu', batch_norm=True, dropou
 
     return model
 
-def mobilenet_model():
-    pass
+def mobilenet_model(init='glorot_uniform', activation='relu', dropout=0.5, regularizer='l2-0.01'):
+    '''
+       Create an instance of the baseline model.
+
+       Parameters
+       ----------
+       init: str
+           Weights initialization strategy.
+       activation : str
+           Activation function to use.
+       batch_norm : boolean
+           Whether to use batch normalization or not.
+       dropout : float
+           Ratio of weights to turn off before the final activation function
+       regularizer: str : reg_type-reg_value
+           Type and value of regularization to use, reg_type = l2 or l1
+
+       Returns:
+           model: Sequential()
+               The baseline model object
+       '''
+    reg_type, reg_value = regularizer.split('-')
+    if reg_type == 'l2':
+        regularizer = layers.regularizers.l2(float(reg_value))
+    else:
+        regularizer = layers.regularizers.l1(float(reg_value))
+
+    mobnet_base = MobileNet(weights='imagenet',
+                          include_top=False,
+                          input_shape=(160, 160, 3))
+
+    # Since the mobilenet model was trained on Imagenet which doesn't contains much food images
+    # We will drop some layers drop many (actually 20) deepest layers to ensure that mobilenet only extract
+    # low level features like edges, basic shapes etc ...
+    for _ in xrange(20): mobnet_base.layers.pop()
+
+    # now we freeze it
+    mobnet_base.trainable = False
+
+    # we create the complete network by appending randomly initialized layers
+    model = Sequential()
+    model.add(mobnet_base)
+    model.add(layers.MaxPooling2D((3, 3)))
+
+    model.add(layers.Flatten())
+    model.add(layers.Dropout(dropout))
+    model.add(layers.Dense(512, activation=activation, kernel_initializer=init, kernel_regularizer=regularizer))
+    model.add(layers.Dense(1, activation='sigmoid'))
+
+    return model
+
 
 if __name__ == '__main__':
-    base_model().summary()
+    mobilenet_model().summary()
