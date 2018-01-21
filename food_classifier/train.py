@@ -54,7 +54,7 @@ def _setup_args():
                         help='Type and value of regularization to use, reg_type = l2 or l1')
     parser.add_argument("--activation", default='relu', type=str)
     parser.add_argument("--batch_norm", default=True, action='store_true')
-    parser.add_argument("--model_type", default='base_model', type=str,
+    parser.add_argument("--model_type", default='mobilenet_model', type=str,
                         help='''Type of model to train, either:
                          base_model(baseline) or mobilenet_model(frozen mobilenet feature extraction)''')
 
@@ -73,7 +73,7 @@ def _setup_args():
                         help='Stop when monitor value stop increasing(max) or decreasing(min)')
     parser.add_argument("--early_stop_min_delta", default=0.001, type=float,
                         help='Minimum change in the monitored quantity to qualify as an improvement')
-    parser.add_argument("--early_stop_patience", default=3, type=int,
+    parser.add_argument("--early_stop_patience", default=10, type=int,
                         help='Number of epochs after which to stop if no improvement')
     parser.add_argument("--early_stop_verbose", default=1, type=int)
 
@@ -88,9 +88,9 @@ def _setup_args():
 
     # optimizer
     parser.add_argument("--optimizer_str", default='RMSprop', type=str)
-    parser.add_argument("--lr", default=0.0001, type=float, help='learning rate')
+    parser.add_argument("--lr", default=0.00002, type=float, help='learning rate')
     parser.add_argument("--momentum", default=0.99, type=float, help='momentum of the gradient')
-    parser.add_argument("--epochs", default=20, type=int,
+    parser.add_argument("--epochs", default=60, type=int,
                         help='Number of time to go over the entire dataset during training')
     parser.add_argument("--steps_per_epoch", default=100, type=int)
     parser.add_argument("--validation_steps", default=20, type=int)

@@ -93,6 +93,22 @@ def base_model(init='glorot_uniform', activation='relu', batch_norm=True, dropou
 
     return model
 
+# def pop(self):
+#     '''Removes a layer instance on top of the layer stack.
+#     '''
+#     if not self.outputs:
+#         raise Exception('Sequential model cannot be popped: model is empty.')
+#     else:
+#         self.layers.pop()
+#         if not self.layers:
+#             self.outputs = []
+#             self.inbound_nodes = []
+#             self.outbound_nodes = []
+#         else:
+#             self.layers[-1].outbound_nodes = []
+#             self.outputs = [self.layers[-1].output]
+#         self.built = False
+
 def mobilenet_model(init='glorot_uniform', activation='relu', dropout=0.5, regularizer='l2-0.01'):
     '''
        Create an instance of the baseline model.
@@ -119,15 +135,17 @@ def mobilenet_model(init='glorot_uniform', activation='relu', dropout=0.5, regul
         regularizer = layers.regularizers.l2(float(reg_value))
     else:
         regularizer = layers.regularizers.l1(float(reg_value))
+    myConv2D = functools.partial(layers.Conv2D, kernel_initializer=init, kernel_regularizer=regularizer)
 
     mobnet_base = MobileNet(weights='imagenet',
                           include_top=False,
                           input_shape=(160, 160, 3))
-
     # Since the mobilenet model was trained on Imagenet which doesn't contains much food images
     # We will drop some layers drop many (actually 20) deepest layers to ensure that mobilenet only extract
     # low level features like edges, basic shapes etc ...
-    for _ in xrange(20): mobnet_base.layers.pop()
+    #for _ in xrange(20): pop(mobnet_base)
+    ##### hum huuum: the above does not works, get key-error on final layer when saving model
+
 
     # now we freeze it
     mobnet_base.trainable = False
@@ -135,11 +153,16 @@ def mobilenet_model(init='glorot_uniform', activation='relu', dropout=0.5, regul
     # we create the complete network by appending randomly initialized layers
     model = Sequential()
     model.add(mobnet_base)
-    model.add(layers.MaxPooling2D((3, 3)))
+
+    model.add(myConv2D(128, (3, 3)))
+    model.add(BatchNormalization())
+    model.add(layers.Activation(activation))
+    model.add(layers.MaxPooling2D((2, 2)))
+
 
     model.add(layers.Flatten())
     model.add(layers.Dropout(dropout))
-    model.add(layers.Dense(512, activation=activation, kernel_initializer=init, kernel_regularizer=regularizer))
+    model.add(layers.Dense(256, activation=activation, kernel_initializer=init, kernel_regularizer=regularizer))
     model.add(layers.Dense(1, activation='sigmoid'))
 
     logger.info('''
@@ -147,15 +170,14 @@ def mobilenet_model(init='glorot_uniform', activation='relu', dropout=0.5, regul
         Created mobilenet model with params:
             init = {init}
             activation = {activation}
-            batch_norm = {batch_norm}
             dropout = {dropout} 
-            architecture = {architecture}'''.format(
+            architecture = {architecture}
+            '''.format(
         init=init,
         activation=activation,
         dropout=dropout,
         architecture=model.to_json()
     ))
-
     return model
 
 
