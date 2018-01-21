@@ -4,6 +4,7 @@ import argparse
 import os
 import time
 
+import keras
 import keras.optimizers as keras_optimizers
 import keras.callbacks as keras_callbacks
 from keras.preprocessing.image import ImageDataGenerator
@@ -71,7 +72,7 @@ def _setup_args():
                         help='Stop when monitor value stop increasing(max) or decreasing(min)')
     parser.add_argument("--early_stop_min_delta", default=0.001, type=float,
                         help='Minimum change in the monitored quantity to qualify as an improvement')
-    parser.add_argument("--early_stop_patience", default=2, type=int,
+    parser.add_argument("--early_stop_patience", default=5, type=int,
                         help='Number of epochs after which to stop if no improvement')
     parser.add_argument("--early_stop_verbose", default=1, type=int)
 
@@ -99,6 +100,10 @@ def _setup_args():
     utils.mkdir_p(history_plots_prefix)
     parser.add_argument('--history_plots_prefix', default=history_plots_prefix, type=str,
                         help='Parent path where to save plots created from history objects')
+    parser.add_argument("--resume", default=False, action='store_true', help='Resume training or not')
+    parser.add_argument('--resume_ckpt', default='base_model.ckpt-07-0.88-0.65.hdf5', type=str,
+                        help='Filename of the model checkpoint to resume from')
+
 
     return parser.parse_args()
 
@@ -204,7 +209,7 @@ def _create_history_plots(history, path_prefix):
     plt.title('Training and validation loss')
     plt.legend()
 
-    savepath = os.path.join(path_prefix, time.time() + '.png')
+    savepath = os.path.join(path_prefix, str(time.time()) + '.png')
     plt.savefig(savepath)
 
 def main():
@@ -214,7 +219,12 @@ def main():
     train_generator, validation_generator = _get_datagenerators(args)
 
     # instantiate the model
-    model = _get_model(args)
+    if args.resume:
+        model_filepath = os.path.join(args.ckpts_prefix, args.resume_ckpt)
+        logger.info('Resuming training from ckpt: {}'.format(model_filepath))
+        model = keras.models.load_model(model_filepath)
+    else:
+        model = _get_model(args)
 
     # compilte the model
     optimizer = _get_optimizer(args.optimizer_str, args.lr, args.momentum)
