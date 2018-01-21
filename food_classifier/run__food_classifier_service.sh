@@ -7,4 +7,4 @@ export PYTHONPATH=$PYTHONPATH:$CODE_DIR
 export PYTHONPATH=$PYTHONPATH:$ROOT_DIR
 
 # script to serve the model as a flask rest api
-python2 $CODE_DIR/utils/api.py
+python2 $CODE_DIR/api.py
