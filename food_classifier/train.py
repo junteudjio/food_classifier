@@ -55,7 +55,8 @@ def _setup_args():
     parser.add_argument("--activation", default='relu', type=str)
     parser.add_argument("--batch_norm", default=True, action='store_true')
     parser.add_argument("--model_type", default='base_model', type=str,
-                        help='Type of model to train, either: base_model or mobilenet_model')
+                        help='''Type of model to train, either:
+                         base_model(baseline) or mobilenet_model(frozen mobilenet feature extraction)''')
 
     # model callbacks
     parser.add_argument("--terminate_on_nan", default=True, action='store_true',
