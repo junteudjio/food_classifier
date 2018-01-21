@@ -38,8 +38,7 @@ class Model(object):
         except Exception as e:
             logger.error('Unable to load model, error_message = {}'.format(repr(e)))
             raise e
-        #TODO: uncomment when model is implemented and trained
-        #self.models['mobilenet_model'] = _get_best_model_path('mobilenet_model')
+        self.models['mobilenet_model'] = _get_best_model_path('mobilenet_model')
         self.labels = {1:'sandwich', 0:'sushi'}
 
     def predict(self, image_path, model_type='base_model'):
