@@ -35,8 +35,8 @@ def _setup_args():
     parser.add_argument("--val_dir", default=val_dir, help='Folder containing the validation set images')
 
     # data sizes
-    parser.add_argument("--train_batch_size", default=128, type=int)
-    parser.add_argument("--val_batch_size", default=20, type=int)
+    parser.add_argument("--train_batch_size", default=64, type=int)
+    parser.add_argument("--val_batch_size", default=32, type=int)
 
     # data augmentation
     parser.add_argument("--rescale", default=1./255, type=float)
@@ -86,13 +86,13 @@ def _setup_args():
 
 
     # optimizer
-    parser.add_argument("--optimizer_str", default='adam', type=str)
-    parser.add_argument("--lr", default=0.001, type=float, help='learning rate')
+    parser.add_argument("--optimizer_str", default='RMSprop', type=str)
+    parser.add_argument("--lr", default=0.0001, type=float, help='learning rate')
     parser.add_argument("--momentum", default=0.99, type=float, help='momentum of the gradient')
     parser.add_argument("--epochs", default=20, type=int,
                         help='Number of time to go over the entire dataset during training')
-    parser.add_argument("--steps_per_epoch", default=50, type=int)
-    parser.add_argument("--validation_steps", default=4, type=int)
+    parser.add_argument("--steps_per_epoch", default=100, type=int)
+    parser.add_argument("--validation_steps", default=20, type=int)
 
 
     # others
@@ -181,8 +181,12 @@ def _get_model(args):
             regularizer=args.regularizer
         )
     elif args.model_type == 'mobilenet_model':
-        #TODO: need to create this class in models.py
-        model = models.mobilenet_model()
+        model = models.mobilenet_model(
+            init=args.init,
+            activation=args.activation,
+            dropout=args.dropout,
+            regularizer=args.regularizer
+        )
     else:
         raise ValueError('Unknown model_type error, model_type should be one of (base_model, mobilenet_model)')
 
