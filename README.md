@@ -158,7 +158,7 @@ Likewise, the recall is sligthly high compared to the precision but much better 
 (key take-away: fine-tuning is awesome)
 
 
-<p align="center"><img width="50%" src="mobilenet__validation_loss.png" /></p>
+<p align="center"><img width="50%" src="mobilenet_model__validation_loss.png" /></p>
 FIGURE:  mobilenet validation loss decreasing over epochs.
 
 The comparison of the two plots shows that the base_model loss has a long path to go from ~13.0 to ~1.0.
