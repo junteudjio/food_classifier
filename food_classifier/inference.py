@@ -55,13 +55,21 @@ def _load_model(model_path, model_type):
 class Model(object):
     def __init__(self, ckpts_path=ckpts_path):
         self.models = dict()
+
+        # the mobilenet_model must have already been trained before calling this class
         try:
-            self.models['base_model'] = _load_model(_get_best_model_path('base_model', ckpts_path), 'base_model')
             self.models['mobilenet_model'] = \
                 _load_model(_get_best_model_path('mobilenet_model', ckpts_path), 'mobilenet_model')
         except Exception as e:
-            logger.error('Unable to load model, error_message = {}'.format(repr(e)))
+            logger.error('Unable to load mobilenet_model, error_message = {}'.format(repr(e)))
             raise e
+
+        # optional to have previously trained the baseline model.
+        # hence don't call predict methods on it too if not yet trained.
+        try:
+            self.models['base_model'] = _load_model(_get_best_model_path('base_model', ckpts_path), 'base_model')
+        except Exception as e:
+            logger.error('Unable to load base_model, error_message = {}'.format(repr(e)))
         self.labels = {0:'sandwich', 1:'sushi'}
 
     def predict(self, image_path, model_type='mobilenet_model'):
