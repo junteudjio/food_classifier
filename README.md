@@ -78,7 +78,7 @@ docker commit <container-id> food-cls-trained
 docker run -it --entrypoint /home/junior/food_classifier/run__food_classifier_service.sh -p 8383:8383 food-cls-trained
 ```
 
-- make a query to the microservice similarly as before but make sure to use your machine ip address not localhost.
+- make a query to the microservice similarly as before but make sure to use your machine's ip address, not localhost.
 
 
 ## Implementations specifications and constraints
@@ -92,8 +92,8 @@ docker run -it --entrypoint /home/junior/food_classifier/run__food_classifier_se
 
 ## Models
 
-Two different architecture have been trained: base_model and mobilenet_model.
-The have different architectures both have in common the fact that they are lightweights (~3M params, ~22MegaBits) so we can meet the above constraints.
+Two different architectures have been trained: base_model and mobilenet_model.
+The have different architectures but have in common the fact that they are lightweights (~3M params, ~22MegaBits) so we can meet the above constraints.
 
 ###  base_model :  The baseline architecture
 
@@ -103,7 +103,7 @@ The have different architectures both have in common the fact that they are ligh
 
 ### mobilenet_model : The default trained and served architecture
 
-- use the very lightweight mobilenet model as a feature features. Hence its layers are frozen, the last dense layer replaced.
+- use the very lightweight mobilenet model as a feature extractor. Hence its layers are frozen, the last dense layer replaced.
 - append a trainable convolution layer before the dense layer to cut down the number of params from ~6M to ~3M.
 
 
@@ -161,6 +161,9 @@ Likewise, the recall is sligthly high compared to the precision but much better 
 <p align="center"><img width="50%" src="mobilenet__validation_loss.png" /></p>
 FIGURE:  mobilenet validation loss decreasing over epochs.
 
+The comparison of the two plots shows that the base_model loss has a long path to go from ~13.0 to ~1.0.
+Whereas, the mobilenet_model converges much more quickly since its loss starts from ~4.5.
+
 
 ## Moving to production:
 
@@ -177,6 +180,7 @@ The procedure can be found here : https://github.com/tensorflow/serving/issues/3
 ## Going further:
 
 The followings can help us make the service better and faster:
+
 - Thrift: better serialization than the current json format of our service.
 - Redis: to add a caching layer on top of our service.
 - Kafka: to service the model in a distributed environment.
