@@ -20,7 +20,16 @@ setup(
     license=license,
     packages=find_packages(exclude=('tests')),
     install_requires=[
-
+        'tqdm',
+        'numpy',
+        'scipy',
+        'tensorflow==1.4.1',
+        'matplotlib',
+        'scikit-learn',
+        'keras',
+        'pillow',
+        'h5py',
+        'Flask==0.12.2',
     ]
 )
 
