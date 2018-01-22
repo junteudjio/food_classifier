@@ -65,6 +65,11 @@ should return a similar result to this :
 ```bash
 docker build -t food-cls
 ```
+
+- then run the docker image:
+```bash
+docker run food-cls
+```
 This will automatically download the dataset, split it and train the mobilenet_model (default architecture)
 
 
